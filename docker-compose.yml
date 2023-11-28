@@ -1,0 +1,30 @@
+services:
+  postgres:
+    image: "postgres:alpine"
+    environment:
+      POSTGRES_PASSWORD: postgres
+    networks:
+      - outlier_network
+  commcare_data_export:
+    container_name: commcare_data_export
+    build: commcare_data_export/
+    environment:
+      - CC_HQ
+      - CC_USER
+      - CC_APIKEY
+      - CC_AUTH_MODE
+      - CC_PROJECT
+    networks:
+      - outlier_network
+  outlierdetect:
+    container_name: outlierdetect
+    build: outlierdetect/
+    networks:
+      - outlier_network
+    depends_on:
+      commcare_data_export:
+        condition: service_completed_successfully
+
+networks:
+  outlier_network:
+    driver: bridge
