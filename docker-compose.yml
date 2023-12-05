@@ -19,6 +19,11 @@ services:
   outlierdetect:
     container_name: outlierdetect
     build: outlierdetect/
+    environment:
+      - CC_HQ
+      - CC_USER
+      - CC_PROJECT
+      - CC_PASSWORD
     networks:
       - outlier_network
     depends_on:

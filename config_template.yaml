@@ -1,0 +1,7 @@
+# XForm xmlns
+target_form: "YOUR_TARGET_FORM"
+
+# List of questions for outlier detection
+source_form_outlier_questions:
+  - "YOUR_QUESTION_1"
+  - "YOUR_QUESTION_2"
