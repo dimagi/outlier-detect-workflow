@@ -24,6 +24,7 @@ services:
       - CC_USER
       - CC_PROJECT
       - CC_PASSWORD
+      - CC_OWNERID
     networks:
       - outlier_network
     depends_on:
