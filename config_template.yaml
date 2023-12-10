@@ -2,3 +2,7 @@
 source_form_outlier_questions:
   - "YOUR_QUESTION_1"
   - "YOUR_QUESTION_2"
+
+# Specify outlier detection month and year
+activity_outlier_month: 10
+activity_outlier_year: 2023

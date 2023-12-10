@@ -47,10 +47,10 @@ def bulk_upload_case_data(xlsfile: str) -> Tuple[bool, str]:
                              files=files,auth=auth)
     if not 200 <= response.status_code < 300:
         return False, http_responses[response.status_code]
-    return parse_response(response.text)
+    return parse_response(response)
 
 
-def parse_response(text: str) -> Tuple[bool, str]:
+def parse_response(text):
     """
     Parses a CommCare HQ Submission API response.
 
@@ -58,6 +58,7 @@ def parse_response(text: str) -> Tuple[bool, str]:
     failure_message) on failure.
 
     """
+    print(text)
     message = text['message']
     success = message == 'success'
     return success, message

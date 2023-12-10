@@ -13,6 +13,13 @@ QUESTIONS = config['source_form_outlier_questions']
 OWNER_ID=os.environ['CC_OWNERID']
 aggregation_col = 'username'
 OUTLIER_RESULTS_EXCEL = 'outlier_results.xlsx'
+activity_outlier_month = config['activity_outlier_month']
+activity_outlier_year = config['activity_outlier_year']
+
+def filter_dt(df):
+    df['timeEnd'] = pd.to_datetime(df['timeEnd'])
+    df_filtered = df.loc[(df['timeEnd'].dt.month == activity_outlier_month) &  (df['timeEnd'].dt.year == activity_outlier_year)]
+    return df_filtered
 
 def restructure_outlier_output(output_dict):
     res = []
@@ -31,7 +38,11 @@ if __name__ == '__main__':
     psql_connection = 'postgresql://postgres:postgres@postgres/postgres'
     eng = create_engine(psql_connection)
     sample_sql = "SELECT * FROM outlier_data_export;"
-    data = pd.read_sql(sample_sql, eng)
+    data_all = pd.read_sql(sample_sql, eng)
+    #Filter by month and year
+    data = filter_dt(data_all)
+    
+    data.to_csv('output_sample.csv')
     #Compute MMA outlier scores
     (mma_scores, _) = outlierdetect.run_mma(data, aggregation_col, QUESTIONS)
     #Restructure the outlier scores for submission to CCHQ
