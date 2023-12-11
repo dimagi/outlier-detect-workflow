@@ -58,8 +58,7 @@ def parse_response(text):
     failure_message) on failure.
 
     """
-    print(text)
-    message = text['message']
+    message = text.json()['message']
     success = message == 'success'
     return success, message
 

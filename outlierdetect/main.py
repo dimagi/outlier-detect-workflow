@@ -13,12 +13,12 @@ QUESTIONS = config['source_form_outlier_questions']
 OWNER_ID=os.environ['CC_OWNERID']
 aggregation_col = 'username'
 OUTLIER_RESULTS_EXCEL = 'outlier_results.xlsx'
-activity_outlier_month = config['activity_outlier_month']
-activity_outlier_year = config['activity_outlier_year']
+activity_outlier_startdate = pd.to_datetime(config['activity_outlier_startdate']).date()
+activity_outlier_enddate = pd.to_datetime(config['activity_outlier_enddate']).date()
 
 def filter_dt(df):
-    df['timeEnd'] = pd.to_datetime(df['timeEnd'])
-    df_filtered = df.loc[(df['timeEnd'].dt.month == activity_outlier_month) &  (df['timeEnd'].dt.year == activity_outlier_year)]
+    df['timeEnd'] = pd.to_datetime(df['timeEnd']).dt.date
+    df_filtered = df.loc[(df['timeEnd'] >= activity_outlier_startdate) &  (df['timeEnd'] < activity_outlier_enddate)]
     return df_filtered
 
 def restructure_outlier_output(output_dict):
