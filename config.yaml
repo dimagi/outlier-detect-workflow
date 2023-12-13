@@ -4,5 +4,5 @@ source_form_outlier_questions:
   - "YOUR_QUESTION_2"
 
 # Specify outlier detection period
-activity_outlier_startdate: "11/1/2023"
-activity_outlier_enddate: "12/1/2023"
+activity_outlier_startdate: "2023-11-01"
+activity_outlier_enddate: "2023-12-01"
