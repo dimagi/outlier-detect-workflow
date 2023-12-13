@@ -20,7 +20,7 @@ $ git clone https://github.com/dimagi/outlier-detect-workflow.git
 
 Save the `outlier_data_export-DET.xlsx` file to the `commcare_data_export` directory.
 
-3\. Edit the `config.yaml` file. Modify the `source_form_outlier_questions` to match the "Field" columns from the CommCare Data Export Tool Excel Query File for the outlier questions only. Update the `activity_outlier_startdate` and `activity_outlier_enddate` to indicate the time period on which to run the outlier detection algorithm. The datetimes need to be compatible want [Pandas to_datetime() method](https://pandas.pydata.org/docs/reference/api/pandas.to_datetime.html).
+3\. Edit the `config.yaml` file. Modify the `source_form_outlier_questions` to match the "Field" columns from the CommCare Data Export Tool Excel Query File for the outlier questions only. Update the `activity_outlier_startdate` and `activity_outlier_enddate` to indicate the time period on which to run the outlier detection algorithm. The datetimes need to be compatible with [Pandas to_datetime() method](https://pandas.pydata.org/docs/reference/api/pandas.to_datetime.html).
 
 Save the `config.yaml` file to the `outlier_detect` directory.
 
@@ -30,15 +30,7 @@ Save the `config.yaml` file to the `outlier_detect` directory.
 ./run.sh
 ```
 
-This command assumes the following parameters are set in your environment variables:
-
-More information on the required arguments are here:
-- commcare hq: URL, such as https://www.commcarehq.org, or alias like "local" or "prod"
-- commcare username: CommCare username
-- commcare api key or password: Credentials needed to run CommCare Data Export tool
-- commcare auth-mode: 'apikey' or 'password' to indicate which [authentication method](https://confluence.dimagi.com/display/commcarepublic/Authentication) to run CommCare Data Export tool
-- commcare password: CommCare user password
-- commcare owner id: CommCare owner id
+This command assumes CommCare authentication parameters are set in your environment variables. For more details, see ".env_template" file for all necessary environment variables.
 
 You can also pass a .env file (see ".env_template") to this command:
 
@@ -46,6 +38,6 @@ You can also pass a .env file (see ".env_template") to this command:
 ./run.sh <.env filepath>
 ```
 
-To protect your credentials, it is best to keep the .env file outside thie repo or add it to your igitignore file.
+To protect your credentials, it is best to keep the .env file outside this repo or add it to your .gitignore file.
 
 
