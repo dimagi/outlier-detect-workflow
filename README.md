@@ -27,8 +27,10 @@ Save the `config.yaml` file to the `outlier_detect` directory.
 4\. Run the CommCare Form Outlier Detection Workflow tool. This action will export data from your CommCare HQ project space, run the outlier detection algorithm and upload the outlier results back into CommCare HQ.
 
 ```
-./run.sh <commcare hq> <commcare username> <commcare api key or password> <commcare auth-mode> <commcare project> <commcare password> <commcare owner id>
+./run.sh
 ```
+
+This command assumes the following parameters are set in your environment variables:
 
 More information on the required arguments are here:
 - commcare hq: URL, such as https://www.commcarehq.org, or alias like "local" or "prod"
@@ -37,5 +39,13 @@ More information on the required arguments are here:
 - commcare auth-mode: 'apikey' or 'password' to indicate which [authentication method](https://confluence.dimagi.com/display/commcarepublic/Authentication) to run CommCare Data Export tool
 - commcare password: CommCare user password
 - commcare owner id: CommCare owner id
+
+You can also pass a .env file (see ".env_template") to this command:
+
+```
+./run.sh <.env filepath>
+```
+
+To protect your credentials, it is best to keep the .env file outside thie repo or add it to your igitignore file.
 
 

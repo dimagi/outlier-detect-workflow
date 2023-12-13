@@ -17,8 +17,8 @@ activity_outlier_startdate = pd.to_datetime(config['activity_outlier_startdate']
 activity_outlier_enddate = pd.to_datetime(config['activity_outlier_enddate']).date()
 
 def filter_dt(df):
-    df['timeEnd'] = pd.to_datetime(df['timeEnd']).dt.date
-    df_filtered = df.loc[(df['timeEnd'] >= activity_outlier_startdate) &  (df['timeEnd'] < activity_outlier_enddate)]
+    df['completed_time'] = pd.to_datetime(df['completed_time']).dt.date
+    df_filtered = df.loc[(df['completed_time'] >= activity_outlier_startdate) &  (df['completed_time'] < activity_outlier_enddate)]
     return df_filtered
 
 def restructure_outlier_output(output_dict):
