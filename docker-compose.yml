@@ -1,10 +1,19 @@
 services:
   postgres:
     image: "postgres:alpine"
+    container_name: postgres
     environment:
       POSTGRES_PASSWORD: postgres
     networks:
       - outlier_network
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-h", "127.0.0.1", "-p", "5432", "-U", "postgres"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
   commcare_data_export:
     container_name: commcare_data_export
     build: commcare_data_export/
@@ -16,6 +25,15 @@ services:
       - CC_PROJECT
     networks:
       - outlier_network
+    healthcheck:
+      test: ["CMD", "pg_isready", "-h", "postgres", "-p", "5432", "-U", "postgres"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    depends_on:
+      postgres:
+        condition: service_healthy
+
   outlierdetect:
     container_name: outlierdetect
     build: outlierdetect/
@@ -30,6 +48,8 @@ services:
     depends_on:
       commcare_data_export:
         condition: service_completed_successfully
+      postgres:
+        condition: service_healthy
 
 networks:
   outlier_network:
