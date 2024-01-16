@@ -6,8 +6,8 @@ services:
       POSTGRES_PASSWORD: postgres
     networks:
       - outlier_network
-    volumes:
-      - ./postgres-data:/var/lib/postgresql/data
+    # volumes:
+    #   - ./postgres-data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD", "pg_isready", "-h", "127.0.0.1", "-p", "5432", "-U", "postgres"]
       interval: 5s
