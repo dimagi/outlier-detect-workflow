@@ -12,9 +12,8 @@ outlier_data_file="$2"
 env_file="$3"
 
 #copy files
-cp "$config_file" outlierdetect/config.yaml
-cp "$config_file" commcare_data_export/config.yaml
-cp "$outlier_data_file" commcare_data_export/outlier_data_export-DET.xlsx
+cp "$config_file" commcare_data_export_outlierdetect/config.yaml
+cp "$outlier_data_file" commcare_data_export_outlierdetect/outlier_data_export-DET.xlsx
 
 # If an .env file is provided, source it to set environment variables
 if [ -n "$env_file" ]; then
@@ -22,9 +21,9 @@ if [ -n "$env_file" ]; then
 fi
 
 # Proceed with the docker-compose command
-docker-compose up --build
+docker-compose up --build --abort-on-container-exit
+docker compose down --volumes
 
 # Clean up by deleting the copied files
-rm -f outlierdetect/config.yaml
-rm -f commcare_data_export/config.yaml
-rm -f commcare_data_export/outlier_data_export-DET.xlsx
+rm -f commcare_data_export_outlierdetect/config.yaml
+rm -f commcare_data_export_outlierdetect/outlier_data_export-DET.xlsx
