@@ -38,4 +38,6 @@ You can optionally pass a .env file (see ".env_template") to this command:
 
 To protect your credentials, it is best to keep the .env file outside this repo or add it to your .gitignore file.
 
-
+Optional: CommCare Outlier Detection Reporting
+--------------------------
+Additionally, you can visualize the outlier reseults using [CommCare HQ's reporting](https://dimagi.atlassian.net/wiki/spaces/commcarepublic/pages/2198241457/Native+Reporting+in+CommCare) feature. Instructions for generating a report for the outlier detection algorith run is given in `Outlier Detection CommCare HQ Reporting.pdf`.
