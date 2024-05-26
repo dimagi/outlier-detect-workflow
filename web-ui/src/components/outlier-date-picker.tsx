@@ -10,11 +10,6 @@ import { FormField, FormItem, FormControl, FormLabel, FormDescription } from "@/
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
-type DateRange = {
-  from: Date | null;
-  to: Date | null;
-};
-
 type FieldType = "from" | "to";
 
 export default function OutlierDatePicker() {

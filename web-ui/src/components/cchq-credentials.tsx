@@ -1,16 +1,9 @@
 import { useFormContext, FormProvider } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Button } from '@/components/ui/button';
-import { Form, FormField, FormItem, FormControl, FormLabel, FormDescription, FormMessage } from '@/components/ui/form';
+import { FormField, FormItem, FormControl, FormLabel, FormDescription, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
-const formSchema = z.object({
-    ccHqUrl: z.string().min(1, "CommCare HQ URL is required"),
-    ccUser: z.string().min(1, "Username is required"),
-    ccApiKey: z.string().min(1, "API Key is required"),
-});
 
 export default function CCHQCredentials() {
     const { control } = useFormContext();
