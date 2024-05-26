@@ -44,6 +44,20 @@ def submit():
         file_path = os.path.join(UPLOAD_FOLDER, UPLOAD_FILENAME)
         file.save(file_path)
 
+        # Debug output of submitted fields
+        date_range = request.form.get('dateRange')
+        ccHqUrl = request.form.get('ccHqUrl')
+        ccUser = request.form.get('ccUser')
+        ccApiKey = request.form.get('ccApiKey')
+        fields = request.form.get('fields')
+
+        print("Submitted Data:")
+        print(f"Date Range: {date_range}")
+        print(f"CommCare HQ URL: {ccHqUrl}")
+        print(f"Username: {ccUser}")
+        print(f"API Key: {ccApiKey}")
+        print(f"Fields: {fields}")
+
         # Start the long-running task in a new thread
         thread = threading.Thread(target=simulate_long_running_task)
         thread.start()
