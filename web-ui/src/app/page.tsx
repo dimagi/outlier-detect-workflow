@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useForm, FormProvider, useFormContext } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -8,6 +8,17 @@ import OutlierDatePicker from "@/components/outlier-date-picker";
 import { UploadConfig } from "@/components/upload-config";
 import { Button } from "@/components/ui/button";
 import CCHQCredentials from "@/components/cchq-credentials";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const FormSchema = z.object({
   dateRange: z.object({
@@ -38,6 +49,9 @@ export default function Home() {
   });
 
   const { watch } = form;
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [taskComplete, setTaskComplete] = useState(false);
 
   const isFormComplete = () => {
     const values = watch();
@@ -58,9 +72,27 @@ export default function Home() {
       body: formData,
     })
     .then(response => response.json())
-    .then(data => console.log(data))
+    .then(data => {
+      setIsDialogOpen(true);
+      setTaskComplete(false);
+      pollStatus();
+    })
     .catch(error => console.error('Error:', error));
   }
+
+  const pollStatus = () => {
+    const interval = setInterval(() => {
+      fetch('/status')
+        .then(response => response.json())
+        .then(data => {
+          setProgress(data.progress);
+          if (data.complete) {
+            clearInterval(interval);
+            setTaskComplete(true);
+          }
+        });
+    }, 100);
+  };
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
@@ -73,6 +105,21 @@ export default function Home() {
             <Button type="submit" disabled={!isFormComplete()}>Run outlier detection</Button>
           </form>
         </FormProvider>
+
+        <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Running Outlier Detection</AlertDialogTitle>
+              <AlertDialogDescription>
+                Progress: {progress}%
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel onClick={() => setIsDialogOpen(false)}>Cancel</AlertDialogCancel>
+              <AlertDialogAction disabled={!taskComplete} onClick={() => setIsDialogOpen(false)}>Okay</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </main>
   );
