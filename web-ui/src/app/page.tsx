@@ -1,3 +1,5 @@
+import { UploadConfig } from "@/components/upload-config";
+
 export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
@@ -6,6 +8,7 @@ export default function Home() {
           Hello world.
         </h1>
       </div>
+      <UploadConfig />
     </main>
   );
 }
