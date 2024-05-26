@@ -3,15 +3,10 @@
 import React, { useCallback, useState } from 'react';
 import { useDropzone, DropzoneOptions } from 'react-dropzone';
 import { cn } from "@/lib/utils";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { FileSpreadsheet, X } from "lucide-react";
 import * as XLSX from 'xlsx';
+import { useFormContext } from "react-hook-form";
 
 type CardProps = React.ComponentProps<typeof Card>;
 
@@ -21,6 +16,7 @@ interface FieldOption {
 }
 
 export function UploadConfig({ className, ...props }: CardProps) {
+  const { setValue } = useFormContext();
   const [fileInfo, setFileInfo] = useState<{ name: string; size: number } | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [fieldOptions, setFieldOptions] = useState<FieldOption[]>([]);
@@ -63,16 +59,20 @@ export function UploadConfig({ className, ...props }: CardProps) {
             (field: string) => field !== 'username' && field !== 'completed_time'
           );
           setFieldOptions(filteredFields.map(field => ({ name: field, selected: false })));
+          setValue("file", file);
+          setValue("fields", filteredFields);
         }
       };
       reader.readAsArrayBuffer(file);
     }
-  }, []);
+  }, [setValue]);
 
   const handleRemoveFile = () => {
     setFileInfo(null);
     setFieldOptions([]);
     setError(null);
+    setValue("file", null);
+    setValue("fields", []);
   };
 
   const handleCheckboxChange = (index: number) => {
@@ -82,6 +82,7 @@ export function UploadConfig({ className, ...props }: CardProps) {
         ...newOptions[index],
         selected: !newOptions[index].selected
       };
+      setValue("fields", newOptions.filter(option => option.selected).map(option => option.name));
       return newOptions;
     });
   };
@@ -90,15 +91,6 @@ export function UploadConfig({ className, ...props }: CardProps) {
     onDrop,
     accept: {
       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
-    },
-    onDragEnter: () => {
-      // Handle drag enter event
-    },
-    onDragLeave: () => {
-      // Handle drag leave event
-    },
-    onDragOver: () => {
-      // Handle drag over event
     },
     multiple: false,
   };
@@ -128,7 +120,7 @@ export function UploadConfig({ className, ...props }: CardProps) {
             className="flex-1 items-center justify-center space-x-4 rounded-md border p-4 cursor-pointer"
           >
             <input {...getInputProps()} />
-            <p>Drag 'n' drop XLSX config, or click to select the file</p>
+            <p>Drag &apos;n&apos; drop XLSX config, or click to select the file</p>
           </div>
         )}
         {fieldOptions.length > 0 && (
