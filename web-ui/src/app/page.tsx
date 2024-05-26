@@ -1,15 +1,14 @@
 "use client";
 
 import React from "react";
-import { useForm, FormProvider } from "react-hook-form";
+import { useForm, FormProvider, useFormContext } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import OutlierDatePicker from "@/components/outlier-date-picker";
 import { UploadConfig } from "@/components/upload-config";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import CCHQCredentials from "@/components/cchq-credentials";
 
-// Define the form schema using Zod for a date range
 const FormSchema = z.object({
   dateRange: z.object({
     from: z.date().nullable(),
@@ -17,6 +16,9 @@ const FormSchema = z.object({
   }).nullable(),
   file: z.any().nullable(),
   fields: z.array(z.string()).nullable(),
+  ccHqUrl: z.string().min(1),
+  ccUser: z.string().min(1),
+  ccApiKey: z.string().min(1),
 });
 
 export default function Home() {
@@ -29,8 +31,18 @@ export default function Home() {
       },
       file: null,
       fields: [],
+      ccHqUrl: 'https://www.commcarehq.org',
+      ccUser: '',
+      ccApiKey: ''
     },
   });
+
+  const { watch } = form;
+
+  const isFormComplete = () => {
+    const values = watch();
+    return values.ccUser && values.ccApiKey && values.dateRange?.from && values.dateRange?.to && values.file;
+  };
 
   function onSubmit(values: z.infer<typeof FormSchema>) {
     console.log(values);
@@ -51,17 +63,10 @@ export default function Home() {
       <div className="z-10 w-full max-w-5xl flex flex-col items-center justify-between font-mono text-sm">
         <FormProvider {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full">
-            <Card className="w-full">
-              <CardHeader>
-                <CardTitle>Date Picker</CardTitle>
-                <CardDescription>Select the date range for the analysis.</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <OutlierDatePicker />
-              </CardContent>
-            </Card>
+            <CCHQCredentials />
+            <OutlierDatePicker />
             <UploadConfig />
-            <Button type="submit">Save Dates</Button>
+            <Button type="submit" disabled={!isFormComplete()}>Run outlier detection</Button>
           </form>
         </FormProvider>
       </div>
