@@ -45,18 +45,22 @@ export default function Home() {
   };
 
   function onSubmit(values: z.infer<typeof FormSchema>) {
-    console.log(values);
+    const formData = new FormData();
+    formData.append('file', values.file);
+    formData.append('dateRange', JSON.stringify(values.dateRange));
+    formData.append('ccHqUrl', values.ccHqUrl);
+    formData.append('ccUser', values.ccUser);
+    formData.append('ccApiKey', values.ccApiKey);
+    formData.append('fields', JSON.stringify(values.fields));
+
     fetch('/submit', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(values)
+      body: formData,
     })
     .then(response => response.json())
     .then(data => console.log(data))
     .catch(error => console.error('Error:', error));
-  };
+  }
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
