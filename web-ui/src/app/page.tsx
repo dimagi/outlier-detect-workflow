@@ -30,6 +30,9 @@ const FormSchema = z.object({
   ccHqUrl: z.string().min(1),
   ccUser: z.string().min(1),
   ccApiKey: z.string().min(1),
+  projectSpace: z.string().min(1),
+  ccPassword: z.string().min(1),
+  ownerId: z.string().min(1),
 });
 
 export default function Home() {
@@ -44,7 +47,10 @@ export default function Home() {
       fields: [],
       ccHqUrl: 'https://www.commcarehq.org',
       ccUser: '',
-      ccApiKey: ''
+      ccApiKey: '',
+      projectSpace: '',
+      ccPassword: '',
+      ownerId: ''
     },
   });
 
@@ -65,6 +71,9 @@ export default function Home() {
     formData.append('ccHqUrl', values.ccHqUrl);
     formData.append('ccUser', values.ccUser);
     formData.append('ccApiKey', values.ccApiKey);
+    formData.append('projectSpace', values.projectSpace);
+    formData.append('ccPassword', values.ccPassword);
+    formData.append('ownerId', values.ownerId);
     formData.append('fields', JSON.stringify(values.fields));
 
     fetch('/submit', {

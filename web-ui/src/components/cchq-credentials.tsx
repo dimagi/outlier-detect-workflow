@@ -4,7 +4,6 @@ import { FormField, FormItem, FormControl, FormLabel, FormDescription, FormMessa
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
-
 export default function CCHQCredentials() {
     const { control } = useFormContext();
 
@@ -46,6 +45,36 @@ export default function CCHQCredentials() {
                     />
                     <FormField
                         control={control}
+                        name="ccPassword"
+                        render={({ field, fieldState }) => (
+                            <FormItem className="flex-1">
+                                <FormLabel>Password</FormLabel>
+                                <FormControl>
+                                    <Input type="password" {...field} />
+                                </FormControl>
+                                <FormDescription>Enter your password for CommCare HQ.</FormDescription>
+                                <FormMessage>{fieldState.error?.message}</FormMessage>
+                            </FormItem>
+                        )}
+                    />
+                </div>
+                <div className="flex space-x-4">
+                    <FormField
+                        control={control}
+                        name="projectSpace"
+                        render={({ field, fieldState }) => (
+                            <FormItem className="flex-1">
+                                <FormLabel>Project Space</FormLabel>
+                                <FormControl>
+                                    <Input {...field} />
+                                </FormControl>
+                                <FormDescription>Enter your Project Space for CommCare HQ.</FormDescription>
+                                <FormMessage>{fieldState.error?.message}</FormMessage>
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={control}
                         name="ccApiKey"
                         render={({ field, fieldState }) => (
                             <FormItem className="flex-1">
@@ -59,6 +88,20 @@ export default function CCHQCredentials() {
                         )}
                     />
                 </div>
+                <FormField
+                    control={control}
+                    name="ownerId"
+                    render={({ field, fieldState }) => (
+                        <FormItem>
+                            <FormLabel>Owner ID</FormLabel>
+                            <FormControl>
+                                <Input {...field} />
+                            </FormControl>
+                            <FormDescription>Enter the Owner ID for CommCare HQ.</FormDescription>
+                            <FormMessage>{fieldState.error?.message}</FormMessage>
+                        </FormItem>
+                    )}
+                />
           </CardContent>
         </Card>
     );
