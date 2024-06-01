@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { useForm, FormProvider, useFormContext } from "react-hook-form";
+import React, { useState } from "react";
+import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import OutlierDatePicker from "@/components/outlier-date-picker";
@@ -11,13 +11,11 @@ import CCHQCredentials from "@/components/cchq-credentials";
 import {
   AlertDialog,
   AlertDialogAction,
-  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
 const FormSchema = z.object({
@@ -56,8 +54,7 @@ export default function Home() {
 
   const { watch } = form;
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [taskComplete, setTaskComplete] = useState(false);
+  const [dialogMessage, setDialogMessage] = useState("Outlier detection algorithm running.");
 
   const isFormComplete = () => {
     const values = watch();
@@ -83,7 +80,6 @@ export default function Home() {
     .then(response => response.json())
     .then(data => {
       setIsDialogOpen(true);
-      setTaskComplete(false);
       pollStatus();
     })
     .catch(error => console.error('Error:', error));
@@ -94,13 +90,13 @@ export default function Home() {
       fetch('/status')
         .then(response => response.json())
         .then(data => {
-          setProgress(data.progress);
           if (data.complete) {
             clearInterval(interval);
-            setTaskComplete(true);
+            setDialogMessage("Outlier detection complete.");
           }
-        });
-    }, 100);
+        })
+        .catch(error => console.error('Error:', error));
+    }, 1000); // Poll every second
   };
 
   return (
@@ -118,14 +114,13 @@ export default function Home() {
         <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Running Outlier Detection</AlertDialogTitle>
+              <AlertDialogTitle>Outlier Detection</AlertDialogTitle>
               <AlertDialogDescription>
-                Progress: {progress}%
+                {dialogMessage}
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel onClick={() => setIsDialogOpen(false)}>Cancel</AlertDialogCancel>
-              <AlertDialogAction disabled={!taskComplete} onClick={() => setIsDialogOpen(false)}>Okay</AlertDialogAction>
+              <AlertDialogAction onClick={() => setIsDialogOpen(false)}>OK</AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>

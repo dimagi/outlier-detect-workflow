@@ -33,7 +33,8 @@ def restructure_outlier_output(output_dict):
             user_question_results = {'username':username,'questionid': questionid, 'score':user_outlier_results['score'],
                             'p_value':user_outlier_results['p_value'], 
                             'expected_freq':str(expected_freq),
-                            'observed_freq':str(user_outlier_results['observed_freq']), 'name':case_name, 'owner_id': OWNER_ID, 'case_name': case_name}
+                            'observed_freq':str(user_outlier_results['observed_freq']),
+                            'name':case_name, 'owner_id': OWNER_ID, 'case_name': case_name}
                             #'expected_freq':str(user_outlier_results['expected_freq']),
             res.append(user_question_results)
     res_df = pd.DataFrame.from_records(res)

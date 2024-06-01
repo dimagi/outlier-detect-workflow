@@ -39,43 +39,46 @@ def simulate_long_running_task():
     progress_data['complete'] = True
 
 def run_outlier_detection_task(creds, config, det_config_file_path):
+    global progress_data
+    progress_data['progress'] = 0
+    progress_data['complete'] = False
+
     # Your actual outlier detection code here
     print("Outlier detection function executed.")
-    #TODO: Finish this
-    #Set credentials as environment variables
-    os.environ['CC_HQ'] = creds['ccHqUrl']
-    os.environ['CC_USER'] = creds['ccUser']
-    os.environ['CC_PASSWORD'] = str(creds['ccPassword'])
-    os.environ['CC_PROJECT'] = creds['ccProjectSpace']
-    os.environ['CC_APIKEY'] = creds['ccApiKey']
-    os.environ['CC_OWNERID'] = creds['ccOwnerID']
-    os.environ['CC_AUTH_MODE']='apikey'
+    
+    # Save credentials in .env file
+    env_file_path = os.path.join(UPLOAD_FOLDER, '.env')
 
+    with open(env_file_path, 'w') as env_file:
+        for key, value in creds.items():
+            env_file.write(f'{key}={value}\n')
 
-    #Write the config to a yaml file
+    # Write the config to a yaml file
     config_outliertool = {}
     date_range = json.loads(config['date_range'])
-    config_outliertool['source_form_outlier_questions'] = [str(x) for x in json.loads(config['fields'])
-    config_outliertool['activity_outlier_startdate'] = convert_to_date(date_range['from'])
-    config_outliertool['activity_outlier_enddate'] = convert_to_date(date_range['to'])
-
+    config_outliertool['source_form_outlier_questions'] = [str(x) for x in json.loads(config['fields'])]
+    config_outliertool['activity_outlier_startdate'] = format_date(date_range['from'])
+    config_outliertool['activity_outlier_enddate'] = format_date(date_range['to'])
 
     # File path where the YAML file will be created
     currdatetime = datetime.now().strftime("%Y%m%d%H%M")
     yaml_filename = 'config' + currdatetime +  '.yaml'
     yaml_file_path = os.path.join(UPLOAD_FOLDER, yaml_filename)
-    
 
     # Writing data to a YAML file
     with open(yaml_file_path, 'w') as yaml_file:
         yaml.dump(config_outliertool, yaml_file, default_flow_style=False)
 
-    #Run shell command for outlier detect workflow
-    command = ['../run.sh'] + [yaml_file_path, det_config_file_path]
+    # Run shell command for outlier detect workflow
+    command = ['../run.sh'] + [yaml_file_path, det_config_file_path, env_file_path]
     subprocess.run(command)
 
+    progress_data['complete'] = True
 
-    #delete config file
+    #Clean up temp files
+    os.remove(env_file_path)
+    os.remove(yaml_file_path)
+
 
 @app.route('/')
 @app.route('/<path:path>')
@@ -99,12 +102,13 @@ def submit():
         config = {}
         creds = {}
         date_range = request.form.get('dateRange')
-        creds['ccHqUrl'] = request.form.get('ccHqUrl')
-        creds['ccUser'] = request.form.get('ccUser')
-        creds['ccPassword'] = request.form.get('ccPassword')
-        creds['ccProjectSpace'] = request.form.get('projectSpace')
-        creds['ccApiKey'] = request.form.get('ccApiKey')
-        creds['ccOwnerID'] = request.form.get('ownerId')
+        creds['CC_HQ'] = request.form.get('ccHqUrl')
+        creds['CC_USER'] = request.form.get('ccUser')
+        creds['CC_PASSWORD'] = request.form.get('ccPassword')
+        creds['CC_PROJECT'] = request.form.get('projectSpace')
+        creds['CC_APIKEY'] = request.form.get('ccApiKey')
+        creds['CC_OWNERID'] = request.form.get('ownerId')
+        creds['CC_AUTH_MODE'] = 'apikey'
 
         config['date_range'] = date_range
         config['fields'] = request.form.get('fields')
@@ -114,13 +118,6 @@ def submit():
         thread.start()
 
     return jsonify(success=True)
-
-# @app.route('/run-outlier-detection', methods=['POST'])
-# def run_outlier_detection():
-#     # Start the outlier detection task in a new thread
-#     thread = threading.Thread(target=run_outlier_detection_task)
-#     thread.start()
-#     return jsonify({"message": "Outlier detection started successfully!"})
 
 @app.route('/status', methods=['GET'])
 def status():

@@ -6,14 +6,17 @@ if [ "$#" -lt 2 ]; then
     exit 1
 fi
 
+# Get the directory of the current script
+script_dir=$(dirname "$0")
+
 # Validate and set file paths
 config_file="$1"
 outlier_data_file="$2"
 env_file="$3"
 
-#copy files
-cp "$config_file" commcare_data_export_outlierdetect/config.yaml
-cp "$outlier_data_file" commcare_data_export_outlierdetect/outlier_data_export-DET.xlsx
+# Copy files
+cp "$config_file" "$script_dir/commcare_data_export_outlierdetect/config.yaml"
+cp "$outlier_data_file" "$script_dir/commcare_data_export_outlierdetect/outlier_data_export-DET.xlsx"
 
 # If an .env file is provided, source it to set environment variables
 if [ -n "$env_file" ]; then
@@ -21,9 +24,9 @@ if [ -n "$env_file" ]; then
 fi
 
 # Proceed with the docker-compose command
-docker-compose up --build --abort-on-container-exit
-docker compose down --volumes
+(cd "$script_dir" && docker-compose up --build --abort-on-container-exit)
+(cd "$script_dir" && docker-compose down --volumes)
 
 # Clean up by deleting the copied files
-rm -f commcare_data_export_outlierdetect/config.yaml
-rm -f commcare_data_export_outlierdetect/outlier_data_export-DET.xlsx
+rm -f "$script_dir/commcare_data_export_outlierdetect/config.yaml"
+rm -f "$script_dir/commcare_data_export_outlierdetect/outlier_data_export-DET.xlsx"
