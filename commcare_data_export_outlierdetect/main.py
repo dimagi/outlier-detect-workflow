@@ -34,6 +34,7 @@ def restructure_outlier_output(output_dict):
                             'p_value':user_outlier_results['p_value'], 
                             'expected_freq':str(expected_freq),
                             'observed_freq':str(user_outlier_results['observed_freq']),
+                            'date_range' : f"{activity_outlier_startdate} to {activity_outlier_enddate}",
                             'name':case_name, 'owner_id': OWNER_ID, 'case_name': case_name}
                             #'expected_freq':str(user_outlier_results['expected_freq']),
             res.append(user_question_results)
