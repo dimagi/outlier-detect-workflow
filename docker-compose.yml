@@ -17,51 +17,13 @@ services:
   commcare_data_export_outlierdetect:
     container_name: commcare_data_export_outlierdetect
     build: commcare_data_export_outlierdetect/
-    environment:
-      - CC_HQ
-      - CC_USER
-      - CC_APIKEY
-      - CC_AUTH_MODE
-      - CC_PROJECT
-      - CC_PASSWORD
-      - CC_OWNERID
+    env_file:
+      - ./commcare_data_export_outlierdetect/.env
     networks:
       - outlier_network
     depends_on:
       postgres:
         condition: service_healthy
-
-  # commcare_data_export:
-  #   container_name: commcare_data_export
-  #   build: commcare_data_export/
-  #   environment:
-  #     - CC_HQ
-  #     - CC_USER
-  #     - CC_APIKEY
-  #     - CC_AUTH_MODE
-  #     - CC_PROJECT
-  #   networks:
-  #     - outlier_network
-  #   depends_on:
-  #     postgres:
-  #       condition: service_healthy
-
-  # outlierdetect:
-  #   container_name: outlierdetect
-  #   build: outlierdetect/
-  #   environment:
-  #     - CC_HQ
-  #     - CC_USER
-  #     - CC_PROJECT
-  #     - CC_PASSWORD
-  #     - CC_OWNERID
-  #   networks:
-  #     - outlier_network
-  #   depends_on:
-  #     commcare_data_export:
-  #       condition: service_completed_successfully
-  #     postgres:
-  #       condition: service_healthy
 
 networks:
   outlier_network:
