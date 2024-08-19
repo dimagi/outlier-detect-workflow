@@ -10,7 +10,7 @@ with open('config.yaml', 'r') as file:
 
 
 QUESTIONS = config['source_form_outlier_questions']
-OWNER_ID=os.environ['CC_OWNERID']
+# OWNER_ID=os.environ['CC_OWNERID']
 aggregation_col = 'username'
 OUTLIER_RESULTS_EXCEL = 'outlier_results.xlsx'
 activity_outlier_startdate = pd.to_datetime(config['activity_outlier_startdate']).date()
@@ -35,7 +35,7 @@ def restructure_outlier_output(output_dict):
                             'expected_freq':str(expected_freq),
                             'observed_freq':str(user_outlier_results['observed_freq']),
                             'date_range' : f"{activity_outlier_startdate} to {activity_outlier_enddate}",
-                            'name':case_name, 'owner_id': OWNER_ID, 'case_name': case_name}
+                            'name':case_name, 'owner_name': username, 'case_name': case_name}
                             #'expected_freq':str(user_outlier_results['expected_freq']),
             res.append(user_question_results)
     res_df = pd.DataFrame.from_records(res)
@@ -46,6 +46,7 @@ if __name__ == '__main__':
     psql_connection = 'postgresql://postgres:postgres@postgres/postgres'
     eng = create_engine(psql_connection)
     sample_sql = "SELECT * FROM outlier_data_export;"
+
     data_all = pd.read_sql(sample_sql, eng)
     #Filter by month and year
     data = filter_dt(data_all)
@@ -57,6 +58,8 @@ if __name__ == '__main__':
     restructure_outlier_output(mma_scores)
     #Submit data to CCHQ
     success, message = submit_data.main(OUTLIER_RESULTS_EXCEL)
+    print(success)
+    print(message)
     
 
     
