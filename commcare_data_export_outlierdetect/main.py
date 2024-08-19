@@ -10,7 +10,6 @@ with open('config.yaml', 'r') as file:
 
 
 QUESTIONS = config['source_form_outlier_questions']
-# OWNER_ID=os.environ['CC_OWNERID']
 aggregation_col = 'username'
 OUTLIER_RESULTS_EXCEL = 'outlier_results.xlsx'
 activity_outlier_startdate = pd.to_datetime(config['activity_outlier_startdate']).date()
@@ -58,8 +57,6 @@ if __name__ == '__main__':
     restructure_outlier_output(mma_scores)
     #Submit data to CCHQ
     success, message = submit_data.main(OUTLIER_RESULTS_EXCEL)
-    print(success)
-    print(message)
     
 
     
